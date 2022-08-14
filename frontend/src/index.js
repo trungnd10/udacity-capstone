@@ -6,7 +6,7 @@ import { Example } from './app';
 import { Auth0Provider } from "@auth0/auth0-react";
 import LoginButton from './auth/login';
 import LogoutButton from './auth/logout';
-import Profile from './auth/use/profile';
+import Profile from './auth/profile';
 import UseToken from './auth/use/token';
 const authConfig = require("../auth_config.json");
 
@@ -23,10 +23,8 @@ function App() {
             domain={authConfig.domain}
             clientId={authConfig.clientId}
             redirectUri={window.location.origin + authConfig.myWeb}
-            // audience="https://YOUR_DOMAIN/api/v2/"
             audience="https://dev-tigfkctd.us.auth0.com/api/v2/"
             scope="read:current_user update:current_user_metadata"
-            // scope="default:admin"
         >
             <div>
                 <h1>Hello</h1>
