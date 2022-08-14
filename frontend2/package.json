@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "star_": "webpack --mode development --watch",
-    "start": "webpack-dev-server --mode development --open --hot",
+    "sta__": "webpack-dev-server --mode development --open --hot --port 3000",
+    "start": "start http://localhost:3000/web/index.html & webpack-dev-server --mode development --hot --port 3000",
     "build": "webpack --mode production"
   },
   "author": "",
@@ -24,6 +25,7 @@
     "webpack-dev-server": "^4.10.0"
   },
   "dependencies": {
+    "@auth0/auth0-react": "^1.10.2",
     "bootstrap": "^5.2.0",
     "react": "^18.2.0",
     "react-bootstrap": "^2.5.0",
