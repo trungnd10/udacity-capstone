@@ -1,0 +1,2 @@
+export const UDACITY_TOKEN = "UDACITY_TOKEN"
+export const UDACITY_USER_ID = "UDACITY_USER_ID"

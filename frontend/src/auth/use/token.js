@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 const authConfig = require("../../../auth_config.json");
 import { useAuth0 } from "@auth0/auth0-react";
 import Button from 'react-bootstrap/Button';
+import { UDACITY_TOKEN, UDACITY_USER_ID } from '../../const';
 
 const UseToken = () => {
     const { user, isAuthenticated, getAccessTokenSilently } = useAuth0();
@@ -18,6 +19,11 @@ const UseToken = () => {
 
             console.log('token:', accessToken)
             setToken(accessToken);
+            console.log('user:', user)
+            console.log('user.sub:', user.sub)
+
+            localStorage.setItem(UDACITY_TOKEN, accessToken);
+            localStorage.setItem(UDACITY_USER_ID, user.nickname);
 
             const userDetailsByIdUrl = `https://${domain}/api/v2/users/${user.sub}`;
             console.log('userDetailsByIdUrl:', userDetailsByIdUrl);

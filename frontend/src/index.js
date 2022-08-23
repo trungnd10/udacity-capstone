@@ -1,5 +1,6 @@
 import React from 'react' // nạp thư viện react
-import ReactDOM from 'react-dom' // nạp thư viện react-dom
+// import ReactDOM from 'react-dom' // nạp thư viện react-dom
+import ReactDOM from 'react-dom/client'
 import { Button } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Example } from './app';
@@ -8,6 +9,7 @@ import LoginButton from './auth/login';
 import LogoutButton from './auth/logout';
 import Profile from './auth/profile';
 import UseToken from './auth/use/token';
+import MyCanvas from './business/my-canvas';
 const authConfig = require("../auth_config.json");
 
 if (!authConfig.domain || !authConfig.audience) {
@@ -27,17 +29,24 @@ function App() {
             scope="read:current_user update:current_user_metadata"
         >
             <div>
-                <h1>Hello</h1>
+                {/* <h1>Hello</h1>
                 <Button variant="primary">Primary</Button>{' '}
                 <Example></Example>
                 <LoginButton></LoginButton>
                 <LogoutButton></LogoutButton>
                 <Profile></Profile>
-                <UseToken></UseToken>
+                <UseToken></UseToken> */}
+                <MyCanvas />
             </div>
         </Auth0Provider >
     )
 }
 
 // Render component App vào #root element
-ReactDOM.render(<App />, document.getElementById('root'))
+// ReactDOM.render(<App />, document.getElementById('root'))
+const root = ReactDOM.createRoot(document.getElementById("root"))
+root.render(
+    <React.StrictMode>
+        <App />
+    </React.StrictMode>
+);
