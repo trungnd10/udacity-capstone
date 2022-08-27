@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import Canvas from "./canvas-mouse";
 import Axios from 'axios'
-import { BACKEND_URL, UDACITY_TOKEN, UDACITY_USER_ID, UDACITY_USER_SUB } from '../const';
+import { BACKEND_URL, EMITTER_DELETE_IMG, EMITTER_UPDATE_IMG, S3_URL, UDACITY_TOKEN, UDACITY_USER_ID, UDACITY_USER_SUB } from '../const';
 import { Buffer } from 'buffer'
+import ListImage from './list/list-image';
 
 function uuidv4() {
     return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c =>
@@ -15,8 +16,11 @@ const MyCanvas = () => {
 
     const [uploadText, setUploadText] = useState('Upload')
     const [imageId, setImageId] = useState(id)
+    const [image, setImage] = useState({ imageId: id, imageName: id + '.jpg' })
+    const [canvas, setCanvas] = useState(null)
 
-    const w = screen.width - 2, h = screen.height * 0.6
+    const w = screen.width - 2 - 170
+    const h = screen.height * 0.6
 
     const erase = (canvas) => {
         var m = confirm("Want to clear");
@@ -104,7 +108,7 @@ const MyCanvas = () => {
         // alert('Save success! ' + imageName)
         setUploadText('Upload')
         if (window.confirm('Uploaded to S3 success!. Click ok to download: ' + imageName)) {
-            window.open('https://serverless-capstone-images-capstone.s3.us-east-1.amazonaws.com/' + imageName, '_blank');
+            window.open(S3_URL + imageName, '_blank');
         }
     }
 
@@ -125,7 +129,12 @@ const MyCanvas = () => {
 
         const userId = localStorage.getItem(UDACITY_USER_ID)
         const imageName = `${userId}.jpg`
-        const url = `https://serverless-capstone-images-capstone.s3.us-east-1.amazonaws.com/${imageName}`
+        const url = `${S3_URL + imageName}`
+
+        console.log('here, draw:', image)
+        const image = new Image()
+        image.src = url
+        context.drawImage(image, 0, 0, w, h);
 
         // const image = new Image();
         // image.src = url;
@@ -153,21 +162,57 @@ const MyCanvas = () => {
         // const dataURL = canvas.toDataURL()
     };
 
+    const updateImage = (event) => {
+        console.log('event update image:', event)
+        console.log('event update canvas:', canvas)
+        setImage(event)
+
+        const image = new Image()
+        const url = `${S3_URL + event.imageName}`
+        image.src = url
+        const context = canvas.getContext('2d')
+        context.drawImage(image, 0, 0, w, h)
+    }
+
+    const deleteImage = (event) => {
+        console.log('event:', event)
+        setImage(event)
+    }
+
+    const giveRef = (cv) => {
+        console.log('comecomecome:', cv)
+        if (!canvas) {
+            setCanvas(cv)
+        }
+    }
+
     useEffect(() => {
         const userId = localStorage.getItem(UDACITY_USER_ID)
         const imageName = `${userId}.jpg`
-        const url = `https://serverless-capstone-images-capstone.s3.us-east-1.amazonaws.com/${imageName}`
+        const url = `${S3_URL + imageName}`
         const token = localStorage.getItem(UDACITY_TOKEN)
         Axios.get(url).then(result => {
             console.log('result:', result)
         }).catch(e => { console.log('e:', e) })
+
+        // // event listener
+        // console.log(`the component is now mounted.`)
+        // this.$root.$on(EMITTER_UPDATE_IMG, (image) => {
+        //     console.log('update image:', image)
+        // })
+        // this.$root.$on(EMITTER_DELETE_IMG, (image) => {
+        //     console.log('delete image:', image)
+        // })
     })
 
     return (
         <div>
             <h3>Please draw something and then click upload: </h3>
-            <Canvas draw={draw} width={w} height={h} erase={erase} save={save} upload={upload} uploadText={uploadText} createNew={createNew} />
+            <Canvas giveImage={image} giveRef={giveRef} draw={draw} width={w} height={h} erase={erase} save={save} upload={upload} uploadText={uploadText} createNew={createNew} />
             <h3>Here are your saved pictures:</h3>
+            Image ID: {image.imageId}<br />
+            Image Name: {image.imageName}
+            <ListImage updateImage={updateImage} deleteImage={deleteImage} />
         </div>
     );
 };

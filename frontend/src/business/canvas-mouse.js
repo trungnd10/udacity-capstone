@@ -1,8 +1,9 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import { Button } from 'react-bootstrap'
+import { S3_URL } from '../const';
 
-const Canvas = ({ draw, height, width, save, erase, upload, createNew, uploadText }) => {
+const Canvas = ({ giveImage, giveRef, draw, height, width, save, erase, upload, createNew, uploadText }) => {
     const canvas = React.useRef();
 
     // const [flag, setFlag] = useState(false);
@@ -100,8 +101,22 @@ const Canvas = ({ draw, height, width, save, erase, upload, createNew, uploadTex
     }
 
     React.useEffect(() => {
+        console.log('draw here 1!', giveRef)
+        console.log('draw here 2!', canvas.current)
+
         // const context = canvas.current.getContext('2d');
         draw(canvas.current);
+
+        if (giveRef) {
+            giveRef(canvas.current)
+        }
+        if (giveImage) {
+            const image = new Image()
+            const url = `${S3_URL + giveImage.imageName}`
+            image.src = url
+            const context = canvas.current.getContext('2d')
+            context.drawImage(image, 0, 0)
+        }
 
         window.addEventListener('keydown', handleKeyDown);
 
@@ -134,7 +149,7 @@ const Canvas = ({ draw, height, width, save, erase, upload, createNew, uploadTex
     });
     return (
         <div>
-            <canvas ref={canvas} height={height} width={width} style={{ border: '1px solid black' }} />
+            <canvas ref={canvas} height={height} width={width} style={{ border: '1px solid black', width: '100%' }} />
             {/* <img ref="image" src={cheese} className="hidden" /> */}
             {/* <Button variant="primary" onClick={() => save(canvas.current)}>Save</Button> */}
             &nbsp;

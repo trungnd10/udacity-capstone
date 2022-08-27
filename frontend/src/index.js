@@ -1,4 +1,4 @@
-import React from 'react' // nạp thư viện react
+import React, { StrictMode } from 'react'
 // import ReactDOM from 'react-dom' // nạp thư viện react-dom
 import ReactDOM from 'react-dom/client'
 import { Button } from 'react-bootstrap';
@@ -10,6 +10,7 @@ import LogoutButton from './auth/logout';
 import Profile from './auth/profile-simple';
 import UseToken from './auth/use/token-simple';
 import MyCanvas from './business/my-canvas';
+
 const authConfig = require("../auth_config.json");
 
 if (!authConfig.domain || !authConfig.audience) {
@@ -21,26 +22,28 @@ if (!authConfig.domain || !authConfig.audience) {
 // Tạo component App
 function App() {
     return (
-        <Auth0Provider
-            domain={authConfig.domain}
-            clientId={authConfig.clientId}
-            redirectUri={window.location.origin + authConfig.myWeb}
-            audience="https://dev-tigfkctd.us.auth0.com/api/v2/"
-            scope="read:current_user update:current_user_metadata"
-        >
-            <div>
-                {/* <h1>Hello</h1>
+        <StrictMode>
+            <Auth0Provider
+                domain={authConfig.domain}
+                clientId={authConfig.clientId}
+                redirectUri={window.location.origin + authConfig.myWeb}
+                audience="https://dev-tigfkctd.us.auth0.com/api/v2/"
+                scope="read:current_user update:current_user_metadata"
+            >
+                <div>
+                    {/* <h1>Hello</h1>
                 <Button variant="primary">Primary</Button>{' '}
                 <Example></Example>
                 <LoginButton></LoginButton>
                 <LogoutButton></LogoutButton> */}
-                <Profile></Profile>
-                <UseToken></UseToken>
-                <LoginButton></LoginButton>
-                <LogoutButton></LogoutButton>
-                <MyCanvas />
-            </div>
-        </Auth0Provider >
+                    <Profile></Profile>
+                    <UseToken></UseToken>
+                    <LoginButton></LoginButton>
+                    <LogoutButton></LogoutButton>
+                    <MyCanvas />
+                </div>
+            </Auth0Provider >
+        </StrictMode>
     )
 }
 
