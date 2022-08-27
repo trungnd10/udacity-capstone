@@ -17,17 +17,19 @@ const UseToken = () => {
                 scope: "read:current_user",
             });
 
-            console.log('token:', accessToken)
+            // console.log('token:', accessToken)
             setToken(accessToken);
-            console.log('user:', user)
-            console.log('user.sub:', user.sub)
+            // console.log('user:', user)
+            // console.log('user.sub:', user.sub)
 
             localStorage.setItem(UDACITY_TOKEN, accessToken);
-            localStorage.setItem(UDACITY_USER_ID, user.nickname);
-            localStorage.setItem(UDACITY_USER_SUB, user.sub);
+            if (user) {
+                localStorage.setItem(UDACITY_USER_ID, user.nickname);
+                localStorage.setItem(UDACITY_USER_SUB, user.sub);
+            }
 
-            const userDetailsByIdUrl = `https://${domain}/api/v2/users/${user.sub}`;
-            console.log('userDetailsByIdUrl:', userDetailsByIdUrl);
+            // const userDetailsByIdUrl = `https://${domain}/api/v2/users/${user.sub}`;
+            // console.log('userDetailsByIdUrl:', userDetailsByIdUrl);
 
             // const metadataResponse = await fetch(userDetailsByIdUrl, {
             //     headers: {

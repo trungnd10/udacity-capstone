@@ -10,7 +10,6 @@ const ListImage = ({updateImage, deleteImage}) => {
 
     const loadImageList = async (canvas) => {
         const token = localStorage.getItem(UDACITY_TOKEN)
-        console.log('token:', token)
         const headers = {
             'Content-Type': 'application/json',
             'Authorization': 'Bearer ' + token
@@ -19,7 +18,6 @@ const ListImage = ({updateImage, deleteImage}) => {
         Axios.get(imageUrl, {
             headers: headers
         }).then((result) => {
-            console.log('imageListResult:', result)
             const newData = result.data.items
             // TODO not stringify here
             // TODO not stringify here
@@ -46,19 +44,18 @@ const ListImage = ({updateImage, deleteImage}) => {
 
     return (
         <div>
-            <h3>Image List:</h3>
             {imageList.map(image => {
                 return (
                     <div key={image.imageId}>
                         <img height={IMG_LIST_H} src={S3_URL + image.imageName} />
                         <div>
-                            {image.createdAt}
-                            {/* {image.userId} */}
-                            {/* <hr /> */}
                             &nbsp;
                             <Button size="sm" variant="primary" onClick={() => updateImage(image)}>Edit</Button>
                             &nbsp;
                             <Button size="sm" variant="primary" onClick={() => deleteImage(image)}>Delete</Button>
+                            &nbsp;
+                            {image.createdAt}
+                            <br/><br/>
                         </div>
                     </div>
                 );

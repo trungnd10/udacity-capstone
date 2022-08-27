@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { Button } from 'react-bootstrap'
 import { S3_URL } from '../const';
 
-const Canvas = ({ draw, height, width, save, erase, createNew, uploadText }) => {
+const Canvas = ({ draw, height, width, save, erase, uploadText }) => {
     const canvas = React.useRef();
 
     // const [flag, setFlag] = useState(false);
@@ -31,37 +31,6 @@ const Canvas = ({ draw, height, width, save, erase, createNew, uploadText }) => 
         ctx.stroke();
         ctx.closePath();
     }
-
-    // function dataURItoBlob(dataURI) {
-    //     var binary = atob(dataURI.split(',')[1]);
-    //     var array = [];
-    //     for (var i = 0; i < binary.length; i++) {
-    //         array.push(binary.charCodeAt(i));
-    //     }
-    //     return new Blob([new Uint8Array(array)], { type: 'image/jpeg' });
-    // }
-
-    // function dataURItoBlob(dataURI) {
-    //     // convert base64/URLEncoded data component to raw binary data held in a string
-    //     var byteString;
-    //     if (dataURI.split(',')[0].indexOf('base64') >= 0)
-    //         byteString = atob(dataURI.split(',')[1]);
-    //     else
-    //         byteString = unescape(dataURI.split(',')[1]);
-
-    //     // separate out the mime component
-    //     var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
-
-    //     // write the bytes of the string to a typed array
-    //     var ia = new Uint8Array(byteString.length);
-    //     for (var i = 0; i < byteString.length; i++) {
-    //         ia[i] = byteString.charCodeAt(i);
-    //     }
-
-    //     return new Blob([ia], { type: mimeString });
-    // }
-
-
 
     const findxy = (res, e) => {
         const cv = canvas.current
@@ -101,14 +70,12 @@ const Canvas = ({ draw, height, width, save, erase, createNew, uploadText }) => 
     }
 
     React.useEffect(() => {
-        console.log('draw here!', canvas.current)
+        const cv = canvas.current
 
-        // const context = canvas.current.getContext('2d');
         draw(canvas.current);
 
         window.addEventListener('keydown', handleKeyDown);
 
-        let cv = canvas.current;
         const mouseMove = (e) => {
             findxy('move', e)
         }
@@ -141,11 +108,9 @@ const Canvas = ({ draw, height, width, save, erase, createNew, uploadText }) => 
             {/* <img ref="image" src={cheese} className="hidden" /> */}
             {/* <Button variant="primary" onClick={() => save(canvas.current)}>Save</Button> */}
             &nbsp;
-            <Button variant="primary" onClick={() => erase(canvas.current)}>Clear</Button>
-            &nbsp;
             <Button variant="primary" onClick={() => save(canvas.current)}>{uploadText}</Button>
             &nbsp;
-            <Button variant="primary" onClick={() => createNew(canvas.current)}>New</Button>
+            <Button variant="primary" onClick={() => erase(canvas.current)}>New</Button>
         </div>
     );
 };
@@ -155,7 +120,6 @@ Canvas.propTypes = {
     width: PropTypes.number.isRequired,
     save: PropTypes.func.isRequired,
     erase: PropTypes.func.isRequired,
-    createNew: PropTypes.func.isRequired,
 };
 
 export default Canvas;
