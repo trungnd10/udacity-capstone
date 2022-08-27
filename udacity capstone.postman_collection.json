@@ -1,0 +1,218 @@
+{
+	"info": {
+		"_postman_id": "91953412-c475-48e0-aa14-f7d2ce4e2e9a",
+		"name": "udacity capstone",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "3189388"
+	},
+	"item": [
+		{
+			"name": "get all images",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{capstone-url}}/images",
+					"host": [
+						"{{capstone-url}}"
+					],
+					"path": [
+						"images"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "add image",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"userId\": \"auth0|62f7d986e578d985fe41bdb4\",\r\n    \"imageId\": \"cccccccc\",\r\n    \"imageName\": \"aaaaaaaaaaaaa\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{capstone-url}}/images",
+					"host": [
+						"{{capstone-url}}"
+					],
+					"path": [
+						"images"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "upload image",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "",
+							"type": "file",
+							"src": "/C:/Users/Trung/Downloads/images/5f24716fb0c188fc029442519d0f1c3c.jpg"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{capstone-url}}/upload/image/id001",
+					"host": [
+						"{{capstone-url}}"
+					],
+					"path": [
+						"upload",
+						"image",
+						"id001"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete image",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"userId\": \"auth0|62f7d986e578d985fe41bdb4\",\r\n    \"imageId\": \"b\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{capstone-url}}/images/cccccccc",
+					"host": [
+						"{{capstone-url}}"
+					],
+					"path": [
+						"images",
+						"cccccccc"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "update image",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"imageId\": \"cccccccc\",\r\n    \"imageName\": \"aaaaaaaaxinchaoaaaaaa\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{capstone-url}}/images/cccccccc",
+					"host": [
+						"{{capstone-url}}"
+					],
+					"path": [
+						"images",
+						"cccccccc"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "capstone-url",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "token",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
