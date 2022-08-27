@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { Button } from 'react-bootstrap'
 import { S3_URL } from '../const';
 
-const Canvas = ({ giveImage, giveRef, draw, height, width, save, erase, upload, createNew, uploadText }) => {
+const Canvas = ({ draw, height, width, save, erase, createNew, uploadText }) => {
     const canvas = React.useRef();
 
     // const [flag, setFlag] = useState(false);
@@ -11,7 +11,7 @@ const Canvas = ({ giveImage, giveRef, draw, height, width, save, erase, upload, 
     // const [currX, setCurrX] = useState(0);
     // const [prevY, setPrevY] = useState(0);
     // const [currY, setCurrY] = useState(0);
-    const [x, setX] = useState('black')
+    const [x, setX] = useState('green')
     const [y, setY] = useState(2)
 
     let flag = false, dot_flag = false
@@ -101,22 +101,10 @@ const Canvas = ({ giveImage, giveRef, draw, height, width, save, erase, upload, 
     }
 
     React.useEffect(() => {
-        console.log('draw here 1!', giveRef)
-        console.log('draw here 2!', canvas.current)
+        console.log('draw here!', canvas.current)
 
         // const context = canvas.current.getContext('2d');
         draw(canvas.current);
-
-        if (giveRef) {
-            giveRef(canvas.current)
-        }
-        if (giveImage) {
-            const image = new Image()
-            const url = `${S3_URL + giveImage.imageName}`
-            image.src = url
-            const context = canvas.current.getContext('2d')
-            context.drawImage(image, 0, 0)
-        }
 
         window.addEventListener('keydown', handleKeyDown);
 
@@ -155,7 +143,7 @@ const Canvas = ({ giveImage, giveRef, draw, height, width, save, erase, upload, 
             &nbsp;
             <Button variant="primary" onClick={() => erase(canvas.current)}>Clear</Button>
             &nbsp;
-            <Button variant="primary" onClick={() => upload(canvas.current)}>{uploadText}</Button>
+            <Button variant="primary" onClick={() => save(canvas.current)}>{uploadText}</Button>
             &nbsp;
             <Button variant="primary" onClick={() => createNew(canvas.current)}>New</Button>
         </div>
@@ -167,7 +155,6 @@ Canvas.propTypes = {
     width: PropTypes.number.isRequired,
     save: PropTypes.func.isRequired,
     erase: PropTypes.func.isRequired,
-    upload: PropTypes.func.isRequired,
     createNew: PropTypes.func.isRequired,
 };
 

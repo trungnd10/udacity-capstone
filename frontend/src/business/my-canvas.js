@@ -14,13 +14,16 @@ function uuidv4() {
 const MyCanvas = () => {
     const id = uuidv4()
 
-    const [uploadText, setUploadText] = useState('Upload')
-    const [imageId, setImageId] = useState(id)
+    const [uploadText, setUploadText] = useState('Save')
     const [image, setImage] = useState({ imageId: id, imageName: id + '.jpg' })
-    const [canvas, setCanvas] = useState(null)
 
     const w = screen.width - 2 - 170
     const h = screen.height * 0.6
+
+    const reset = () => {
+        const id = uuidv4()
+        setImage({ imageId: id, imageName: id + '.jpg' })
+    }
 
     const erase = (canvas) => {
         var m = confirm("Want to clear");
@@ -33,23 +36,19 @@ const MyCanvas = () => {
 
             ctx.clearRect(0, 0, w, h);
             // document.getElementById("canvasimg").style.display = "none";
-        }
-    }
 
-    const save = (canvas) => {
-        document.getElementById("canvasimg").style.border = "2px solid";
-        var dataURL = canvas.toDataURL();
-        document.getElementById("canvasimg").src = dataURL;
-        document.getElementById("canvasimg").style.display = "inline";
+            reset()
+        }
     }
 
     const createNew = (canvas) => {
 
     }
 
-    const upload = async (canvas) => {
-        setUploadText('Uploading...')
-        var dataUrl = canvas.toDataURL("image/jpeg");
+    const save = async (canvas) => {
+        setUploadText('Saving...')
+        const imageType = 'image/jpeg'
+        var dataUrl = canvas.toDataURL(imageType);
 
         // // erase
         // const ctx = canvas.getContext('2d')
@@ -65,7 +64,7 @@ const MyCanvas = () => {
             array.push(blobBin.charCodeAt(i));
         }
         console.log('array:', array)
-        var file = new Blob([new Uint8Array(array)], { type: 'image/png' });
+        var file = new Blob([new Uint8Array(array)], { type: imageType });
         console.log('file:', file)
 
         var formdata = new FormData();
@@ -74,7 +73,6 @@ const MyCanvas = () => {
 
         const userId = localStorage.getItem(UDACITY_USER_ID)
         const userSub = localStorage.getItem(UDACITY_USER_SUB)
-        const imageName = `${imageId}.jpg`
         console.log('sub:', userSub)
 
         const token = localStorage.getItem(UDACITY_TOKEN)
@@ -88,14 +86,14 @@ const MyCanvas = () => {
         const createImageUrl = `${BACKEND_URL}/images`
         const addImageResult = await Axios.post(createImageUrl, {
             "userId": `${userSub}`,
-            "imageId": `${imageId}`,
-            "imageName": `${imageName}`
+            "imageId": `${image.imageId}`,
+            "imageName": `${image.imageName}`
         }, {
             headers: headers
         })
         console.log('addImageResult:', addImageResult)
 
-        const url = `${BACKEND_URL}/upload/image/${imageName}`
+        const url = `${BACKEND_URL}/upload/image/${image.imageName}`
         const result = await Axios.post(url, {}, {
             headers: headers
         })
@@ -105,10 +103,10 @@ const MyCanvas = () => {
 
         const r = await Axios.put(uploadUrl, file)
         console.log('r:', r)
-        // alert('Save success! ' + imageName)
+        // alert('Save success! ' + image.imageName)
         setUploadText('Upload')
-        if (window.confirm('Uploaded to S3 success!. Click ok to download: ' + imageName)) {
-            window.open(S3_URL + imageName, '_blank');
+        if (window.confirm('Uploaded to S3 success!. Click ok to download: ' + image.imageName)) {
+            window.open(S3_URL + image.imageName, '_blank');
         }
     }
 
@@ -123,18 +121,26 @@ const MyCanvas = () => {
     const draw = canvas => {
         // Insert your canvas API code to draw an image
 
-        const context = canvas.getContext('2d')
-        context.fillStyle = "#FFFFFF";
-        context.fillRect(0, 0, w, h);
+        // const context = canvas.getContext('2d')
+        // context.fillStyle = "#FFFFFF";
+        // context.fillRect(0, 0, w, h);
 
-        const userId = localStorage.getItem(UDACITY_USER_ID)
-        const imageName = `${userId}.jpg`
-        const url = `${S3_URL + imageName}`
+        // const userId = localStorage.getItem(UDACITY_USER_ID)
+        // const imageName = `${userId}.jpg`
+        // const url = `${S3_URL + imageName}`
 
-        console.log('here, draw:', image)
-        const image = new Image()
-        image.src = url
-        context.drawImage(image, 0, 0, w, h);
+        // console.log('here, draw:', image)
+        // const image = new Image()
+        // image.src = url
+        // context.drawImage(image, 0, 0, w, h);
+
+        if (image) {
+            const img = new Image()
+            const url = `${S3_URL + image.imageName}`
+            img.src = url
+            const context = canvas.getContext('2d')
+            context.drawImage(img, 0, 0)
+        }
 
         // const image = new Image();
         // image.src = url;
@@ -164,26 +170,23 @@ const MyCanvas = () => {
 
     const updateImage = (event) => {
         console.log('event update image:', event)
-        console.log('event update canvas:', canvas)
         setImage(event)
-
-        const image = new Image()
-        const url = `${S3_URL + event.imageName}`
-        image.src = url
-        const context = canvas.getContext('2d')
-        context.drawImage(image, 0, 0, w, h)
     }
 
     const deleteImage = (event) => {
         console.log('event:', event)
-        setImage(event)
-    }
-
-    const giveRef = (cv) => {
-        console.log('comecomecome:', cv)
-        if (!canvas) {
-            setCanvas(cv)
+        const token = localStorage.getItem(UDACITY_TOKEN)
+        const headers = {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token
         }
+        const url = `${BACKEND_URL + '/images/' + image.imageId}`
+        Axios.delete(url, {
+            headers: headers
+        }).then(result => {
+            console.log('result delete:', result)
+            reset()
+        }).catch(e => { console.log('e:', e) })
     }
 
     useEffect(() => {
@@ -208,7 +211,7 @@ const MyCanvas = () => {
     return (
         <div>
             <h3>Please draw something and then click upload: </h3>
-            <Canvas giveImage={image} giveRef={giveRef} draw={draw} width={w} height={h} erase={erase} save={save} upload={upload} uploadText={uploadText} createNew={createNew} />
+            <Canvas draw={draw} width={w} height={h} erase={erase} save={save} uploadText={uploadText} createNew={createNew} />
             <h3>Here are your saved pictures:</h3>
             Image ID: {image.imageId}<br />
             Image Name: {image.imageName}
