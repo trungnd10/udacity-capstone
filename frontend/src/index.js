@@ -7,8 +7,8 @@ import { Example } from './app';
 import { Auth0Provider } from "@auth0/auth0-react";
 import LoginButton from './auth/login';
 import LogoutButton from './auth/logout';
-import Profile from './auth/profile';
-import UseToken from './auth/use/token';
+import Profile from './auth/profile-simple';
+import UseToken from './auth/use/token-simple';
 import MyCanvas from './business/my-canvas';
 const authConfig = require("../auth_config.json");
 
@@ -33,9 +33,11 @@ function App() {
                 <Button variant="primary">Primary</Button>{' '}
                 <Example></Example>
                 <LoginButton></LoginButton>
-                <LogoutButton></LogoutButton>
+                <LogoutButton></LogoutButton> */}
                 <Profile></Profile>
-                <UseToken></UseToken> */}
+                <UseToken></UseToken>
+                <LoginButton></LoginButton>
+                <LogoutButton></LogoutButton>
                 <MyCanvas />
             </div>
         </Auth0Provider >

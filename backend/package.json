@@ -1,7 +1,7 @@
 {
-  "name": "serverless-todo-app",
+  "name": "serverless-image-app",
   "version": "1.0.0",
-  "description": "Serverless TODO image app",
+  "description": "Serverless image app",
   "dependencies": {
     "@types/aws-lambda": "^8.10.101",
     "@types/jsonwebtoken": "^8.5.8",

@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import { Button } from 'react-bootstrap'
 
-const Canvas = ({ draw, height, width, save, erase, upload, uploadText }) => {
+const Canvas = ({ draw, height, width, save, erase, upload, createNew, uploadText }) => {
     const canvas = React.useRef();
 
     // const [flag, setFlag] = useState(false);
@@ -141,6 +141,8 @@ const Canvas = ({ draw, height, width, save, erase, upload, uploadText }) => {
             <Button variant="primary" onClick={() => erase(canvas.current)}>Clear</Button>
             &nbsp;
             <Button variant="primary" onClick={() => upload(canvas.current)}>{uploadText}</Button>
+            &nbsp;
+            <Button variant="primary" onClick={() => createNew(canvas.current)}>New</Button>
         </div>
     );
 };
@@ -151,6 +153,7 @@ Canvas.propTypes = {
     save: PropTypes.func.isRequired,
     erase: PropTypes.func.isRequired,
     upload: PropTypes.func.isRequired,
+    createNew: PropTypes.func.isRequired,
 };
 
 export default Canvas;

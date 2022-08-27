@@ -56,12 +56,6 @@ const UseToken = () => {
     return (
         isAuthenticated && (
             <div>
-                <Button
-                    variant="primary"
-                    disabled={false}
-                    onClick={!false ? handleClick : null}
-                >Click Me</Button>
-                hello {token}
             </div>
         )
     );

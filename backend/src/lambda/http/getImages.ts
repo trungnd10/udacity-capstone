@@ -4,7 +4,7 @@ import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda'
 import * as middy from 'middy'
 import { cors } from 'middy/middlewares'
 
-import { getAllTodos } from '../../businesslogic/todos'
+import { getAllImages } from '../../businesslogic/images'
 import { getUserId } from '../utils';
 import { createLogger } from '../../utils/logger'
 
@@ -13,11 +13,11 @@ const mainHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxy
 
   // Write your code here
   const userId = getUserId(event)
-  const todos = await getAllTodos(userId)
+  const images = await getAllImages(userId)
 
   return {
     statusCode: 200,
-    body: JSON.stringify({ items: todos })
+    body: JSON.stringify({ items: images })
   }
 }
 

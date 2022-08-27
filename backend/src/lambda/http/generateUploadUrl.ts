@@ -4,35 +4,42 @@ import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda'
 import * as middy from 'middy'
 import { cors, httpErrorHandler } from 'middy/middlewares'
 
-import { getSignedUploadUrl, todoExists } from '../../businesslogic/todos'
+import { getSignedUploadUrl, imageExists } from '../../businesslogic/images'
 import { getUserId } from '../utils'
 import { createLogger } from '../../utils/logger'
 
 export const handler = middy(
   async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
     const log = createLogger(`Event: ${event}`);
+    console.log(log)
 
-    const todoId = event.pathParameters.todoId
-    console.log(`- todoId 1: ${todoId}`)
-    log.info(`- todoId 2: ${todoId}`)
-    // TODO: Return a presigned URL to upload a file for a TODO item with the provided id
-    const userId = getUserId(event)
-    console.log('a1')
-    const validTodo = await todoExists(todoId, userId)
-
-    if (!validTodo) {
+    const imageName = event.pathParameters.imageName
+    if (imageName.length <= 4) {
       return {
         statusCode: 404,
         body: JSON.stringify({
-          error: 'Todo does not exist'
+          error: 'ImageName is not valid'
+        })
+      }
+    }
+    const imageId = imageName.slice(0, -4)
+    console.log(`imageId: ${imageId}`)
+
+    const userId = getUserId(event)
+    const validImage = await imageExists(imageId, userId)
+    console.log(validImage)
+
+    if (!validImage) {
+      return {
+        statusCode: 404,
+        body: JSON.stringify({
+          error: 'Image does not exist'
         })
       }
     }
 
-    console.log('a2')
-    const url = await getSignedUploadUrl(todoId, userId)
+    const url = await getSignedUploadUrl(imageName, userId)
 
-    console.log('a3')
     return {
       statusCode: 200,
       body: JSON.stringify({

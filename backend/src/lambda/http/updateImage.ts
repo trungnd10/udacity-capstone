@@ -4,8 +4,8 @@ import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda'
 import * as middy from 'middy'
 import { cors, httpErrorHandler } from 'middy/middlewares'
 
-import { updateTodo, todoExists } from '../../businesslogic/todos'
-import { UpdateTodoRequest } from '../../requests/UpdateTodoRequest'
+import { updateImage, imageExists } from '../../businesslogic/images'
+import { UpdateImageRequest } from '../../requests/UpdateImageRequest'
 import { getUserId } from '../utils'
 import { createLogger } from '../../utils/logger'
 
@@ -13,25 +13,25 @@ export const handler = middy(
   async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
     const log = createLogger(`Event: ${event}`);
 
-    const todoId = event.pathParameters.todoId
-    console.log(`todoId 1: ${todoId}`)
-    log.info(`todoId 2: ${todoId}`)
-    const updatedTodo: UpdateTodoRequest = JSON.parse(event.body)
+    const imageId = event.pathParameters.imageId
+    console.log(`imageId 1: ${imageId}`)
+    log.info(`imageId 2: ${imageId}`)
+    const updatedImage: UpdateImageRequest = JSON.parse(event.body)
     // TODO: Update a TODO item with the provided id using values in the "updatedTodo" object
     const userId = getUserId(event)
 
-    const validTodo = await todoExists(todoId, userId)
+    const validImage = await imageExists(imageId, userId)
 
-    if (!validTodo) {
+    if (!validImage) {
       return {
         statusCode: 404,
         body: JSON.stringify({
-          error: 'Todo does not exist'
+          error: 'Image does not exist'
         })
       }
     }
 
-    await updateTodo(todoId, userId, updatedTodo)
+    await updateImage(imageId, userId, updatedImage)
 
     return {
       statusCode: 204,

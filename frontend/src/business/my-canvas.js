@@ -1,11 +1,20 @@
 import React, { useState, useEffect } from 'react'
 import Canvas from "./canvas-mouse";
 import Axios from 'axios'
-import { UDACITY_TOKEN, UDACITY_USER_ID } from '../const';
+import { BACKEND_URL, UDACITY_TOKEN, UDACITY_USER_ID, UDACITY_USER_SUB } from '../const';
 import { Buffer } from 'buffer'
 
+function uuidv4() {
+    return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c =>
+        (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+    );
+}
+
 const MyCanvas = () => {
+    const id = uuidv4()
+
     const [uploadText, setUploadText] = useState('Upload')
+    const [imageId, setImageId] = useState(id)
 
     const w = screen.width - 2, h = screen.height * 0.6
 
@@ -28,6 +37,10 @@ const MyCanvas = () => {
         var dataURL = canvas.toDataURL();
         document.getElementById("canvasimg").src = dataURL;
         document.getElementById("canvasimg").style.display = "inline";
+    }
+
+    const createNew = (canvas) => {
+
     }
 
     const upload = async (canvas) => {
@@ -56,14 +69,29 @@ const MyCanvas = () => {
         console.log('formdata:', formdata)
 
         const userId = localStorage.getItem(UDACITY_USER_ID)
-        const imageName = `${userId}.jpg`
-        const url = `https://979g6c0nq8.execute-api.us-east-1.amazonaws.com/capstone/upload/image/${imageName}`
+        const userSub = localStorage.getItem(UDACITY_USER_SUB)
+        const imageName = `${imageId}.jpg`
+        console.log('sub:', userSub)
+
         const token = localStorage.getItem(UDACITY_TOKEN)
         console.log('token:', token)
         const headers = {
             'Content-Type': 'application/json',
             'Authorization': 'Bearer ' + token
         }
+
+        // create image first
+        const createImageUrl = `${BACKEND_URL}/images`
+        const addImageResult = await Axios.post(createImageUrl, {
+            "userId": `${userSub}`,
+            "imageId": `${imageId}`,
+            "imageName": `${imageName}`
+        }, {
+            headers: headers
+        })
+        console.log('addImageResult:', addImageResult)
+
+        const url = `${BACKEND_URL}/upload/image/${imageName}`
         const result = await Axios.post(url, {}, {
             headers: headers
         })
@@ -138,7 +166,7 @@ const MyCanvas = () => {
     return (
         <div>
             <h3>Please draw something and then click upload: </h3>
-            <Canvas draw={draw} width={w} height={h} erase={erase} save={save} upload={upload} uploadText={uploadText} />
+            <Canvas draw={draw} width={w} height={h} erase={erase} save={save} upload={upload} uploadText={uploadText} createNew={createNew} />
             <h3>Here are your saved pictures:</h3>
         </div>
     );
