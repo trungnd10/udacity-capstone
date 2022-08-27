@@ -1,6 +1,6 @@
 # Functionality of the application
 
-This application will allow creating/removing/updating/fetching Image. Each user only has access to TODO items that he/she has created.
+This application will allow creating/removing/updating/fetching Image. Each user only has access to items that he/she has created.
 
 ## Prerequisites
 
@@ -66,7 +66,7 @@ npm install
 npm run start
 ```
 
-This should start a development server with the React application that will interact with the serverless TODO application.
+This should start a development server with the React application that will interact with the serverless application.
 
 # Postman collection
 
