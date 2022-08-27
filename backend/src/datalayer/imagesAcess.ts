@@ -29,7 +29,17 @@ export class ImagesAccess {
 
     const result = await this.docClient.query(params).promise()
 
-    return result.Items as ImageItem[]
+    let arr = result.Items as ImageItem[]
+    arr.sort(function (a, b) {
+      var keyA = new Date(a.createdAt),
+        keyB = new Date(b.createdAt);
+      // Compare the 2 dates (desc)
+      if (keyA < keyB) return 1;
+      if (keyA > keyB) return -1;
+      return 0;
+    });
+
+    return arr
   }
 
   async createImage(image: ImageItem): Promise<ImageItem> {

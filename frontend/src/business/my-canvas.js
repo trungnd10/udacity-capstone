@@ -3,6 +3,7 @@ import Canvas from "./canvas-mouse";
 import Axios from 'axios'
 import { BACKEND_URL, S3_URL, UDACITY_TOKEN, UDACITY_USER_ID, UDACITY_USER_SUB } from '../const';
 import ListImage from './list/list-image';
+import { Buffer } from 'buffer'
 
 function uuidv4() {
     return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c =>
@@ -94,37 +95,62 @@ const MyCanvas = () => {
         }
     }
 
+    function getBase64(url) {
+        return Axios
+            .get(url, {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*',
+                'responseType': 'arraybuffer'
+            })
+            .then(response => Buffer.from(response.data, 'binary').toString('base64'))
+    }
+
     const draw = canvas => {
         const ctx = canvas.getContext('2d');
         const w = canvas.width;
         const h = canvas.height;
         ctx.clearRect(0, 0, w, h);
 
-        var randomColor = '#' + Math.floor(Math.random() * 16777215).toString(16);
-        console.log('random:', randomColor)
+        // var randomColor = '#' + Math.floor(Math.random() * 16777215).toString(16);
+        // console.log('random:', randomColor)
         if (image.blank) {
             console.log('blank')
             ctx.fillStyle = "#ffffff";
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            ctx.fillStyle = randomColor;
-            ctx.fillRect(20, 200, 150, 100);
+            // ctx.fillStyle = randomColor;
+            // ctx.fillRect(20, 200, 150, 100);
         } else {
             console.log('not blank')
-            const img = new Image()
-            img.crossOrigin = "anonymous"
             const url = `${S3_URL + image.imageName}`
-            console.log(url)
-            img.src = url
-            ctx.drawImage(img, 0, 0)
+            // // OPTION 1
+            // const img = new Image()
+            // img.crossorigin = "anonymous"
+            // console.log(url)
+            // img.src = url
+            // ctx.drawImage(img, 0, 0)
 
-            ctx.fillStyle = randomColor;
-            ctx.fillRect(20, 200, 150, 100);
+            // ctx.fillStyle = randomColor;
+            // ctx.fillRect(20, 200, 150, 100);
 
-            img.addEventListener("load", (image) => { console.log('loaded', image) }, false);
+            // img.addEventListener("load", (image) => { console.log('loaded', image) }, false);
             // img.onload = () => {
             //     console.log('loaded', image)
             // };
+
+            // // OPTION 2
+            getBase64(url).then(data => {
+                const img = new Image()
+                img.crossorigin = "anonymous"
+                img.src = 'data:image/jpeg;base64,' + data
+                img.onload = () => {
+                    // erase
+                    // const w = canvas.width;
+                    // const h = canvas.height;
+                    // context.clearRect(0, 0, w, h);
+                    ctx.drawImage(img, 0, 0, w, h);
+                };
+            })
         }
     }
 
